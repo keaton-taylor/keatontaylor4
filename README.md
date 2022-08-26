@@ -1,40 +1,85 @@
-# Tailwind CSS Setup Examples
+# Jekyll with Tailwind
 
-A repository of examples showing how to setup Tailwind in a variety of different frameworks and environments.
+## About
 
-Please note that these examples are for the most part contributed and maintained by the community, and we merge them without a ton of review because it seems more helpful to have *something* than nothing. If you notice any issues or inconsistencies across different examples, we welcome all contributions to improve them.
+This project uses [jekyll-postcss](https://github.com/mhanberg/jekyll-postcss) to manage compiling your Tailwind. You can use any [PostCSS](https://postcss.org) plugin by installing it with `yarn` or `npm` and adding it to your `postcss.config.js`.
 
-## Available Examples
+[jekyll-purgecss](https://github.com/mhanberg/jekyll-purgecss) is used to integrate Purgecss (only in production).
 
-- [vue-cli](examples/vue-cli)
-- [Nuxt.js](examples/nuxt)
-- [Next.js](examples/nextjs)
-- [Svelte](examples/svelte)
-- [Sapper](examples/sapper)
-- [Laravel](examples/laravel-postcss-only) (PostCSS-only)
-- [Gridsome](examples/gridsome)
-- [Wordpress](examples/wordpress-laravel-mix) (using Laravel Mix)
-- [Statamic v2](examples/statamic-v2-laravel-mix) (using Laravel Mix)
-- [Jekyll](examples/jekyll)
+## Usage
 
-## Contributing
+### Locally
 
-If we're missing you're favorite framework/static site generator/CMS/whatever, we'd love a PR that includes a barebones example of the best way to set up Tailwind in that environment.
+`bundle exec jekyll serve`
 
-Try to keep the examples as simple as humanly possible, ideally there would be two commits:
+### Production
 
-1. Initializing the default project, usually using some CLI tool provided by the framework (like `vue create my-project` with vue-cli).
-2. The minimum necessary changes to add Tailwind to the project.
+`JEKYLL_ENV=production bundle exec jekyll build`
 
-Please include instructions for the setup process as well, so it's easier for others to follow. [Here's an example](examples/vue-cli/README.md).
+## Install
 
-Some that we're missing that we'd love to have:
+Once you configure the following files, run:
 
-- Ember.js
-- Angular
-- Gatsby
-- Rails
-- Django
-- Symfony
-- Craft CMS
-- Drupal
+```shell
+$ bundle install
+$ yarn install
+
+$ yarn run tailwind init _includes/tailwind.config.js
+```
+
+### Gemfile
+
+```ruby
+group :jekyll_plugins do
+  gem "jekyll-postcss"
+  gem "jekyll-purgecss"
+end
+```
+
+### _config.yml
+
+```yaml
+plugins:
+  - jekyll-postcss
+  - jekyll-purgecss
+```
+
+### package.json
+
+Update the version numbers to whatever is currently latest.
+
+```json
+{
+  "devDependencies": {
+    "autoprefixer": "^9.3.1",
+    "postcss-cli": "^6.0.1",
+    "postcss-import": "^12.0.1",
+    "purgecss": "^1.1.0",
+    "tailwindcss": "^1.0.0"
+  }
+}
+```
+
+### postcss.config.js
+
+```javascript
+module.exports = {
+  plugins: [
+    require("postcss-import"),
+    require("tailwindcss")("./_includes/tailwind.config.js"),
+    require("autoprefixer")
+  ]
+}
+```
+
+### purgecss.config.js
+
+```javascript
+module.exports = {
+  content: ["./_site/**/*.html"],
+  css: ["./_site/css/site.css"],
+  defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
+};
+```
+
+
